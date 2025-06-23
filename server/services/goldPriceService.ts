@@ -3,6 +3,7 @@ import type { GoldPriceData, MarketStatus } from "@shared/schema";
 import { goldScraper } from "../scraper/goldScraper";
 import { antamScraper } from "../scraper/antamScraper";
 import { jewelryScraper } from "../scraper/jewelryScraper";
+import { goldApiService } from "./goldApiService";
 
 export class GoldPriceService {
   private readonly API_KEY = process.env.GOLD_API_KEY || "demo_key";
@@ -10,9 +11,19 @@ export class GoldPriceService {
 
   async fetchLatestPrices(): Promise<GoldPriceData[]> {
     try {
-      console.log("Fetching comprehensive gold prices from Indonesian sources...");
+      console.log("Fetching comprehensive gold prices from GoldAPI and Indonesian sources...");
       
-      // Parallel fetching untuk efisiensi
+      // Primary: Get international gold prices from GoldAPI
+      const goldApiData = await goldApiService.fetchGoldPrice();
+      
+      if (goldApiData) {
+        console.log("Using GoldAPI.io as primary source");
+        const idrData = goldApiService.convertToIDR(goldApiData);
+        return await this.processGoldApiData(idrData);
+      }
+      
+      // Fallback: Indonesian scraping sources
+      console.log("GoldAPI unavailable, falling back to Indonesian sources...");
       const [scrapedPrices, antamPrices, jewelryPrices] = await Promise.allSettled([
         goldScraper.scrapeAllSources(),
         antamScraper.scrapeAntamPrices(),
@@ -104,6 +115,33 @@ export class GoldPriceService {
     }
   }
   
+  private async processGoldApiData(goldApiData: any): Promise<GoldPriceData[]> {
+    const karatData = [
+      { karat: 24, name: "Emas 24 Karat (Internasional)", purity: "99.9%", price: goldApiData.price_gram_24k },
+      { karat: 22, name: "Emas 22 Karat (Internasional)", purity: "91.6%", price: goldApiData.price_gram_22k },
+      { karat: 21, name: "Emas 21 Karat (Internasional)", purity: "87.5%", price: goldApiData.price_gram_21k },
+      { karat: 20, name: "Emas 20 Karat (Internasional)", purity: "83.3%", price: goldApiData.price_gram_20k },
+      { karat: 18, name: "Emas 18 Karat (Internasional)", purity: "75.0%", price: goldApiData.price_gram_18k },
+      { karat: 16, name: "Emas 16 Karat (Internasional)", purity: "66.7%", price: goldApiData.price_gram_16k },
+      { karat: 14, name: "Emas 14 Karat (Internasional)", purity: "58.3%", price: goldApiData.price_gram_14k },
+      { karat: 10, name: "Emas 10 Karat (Internasional)", purity: "41.7%", price: goldApiData.price_gram_10k }
+    ];
+
+    return Promise.all(karatData.map(async karat => {
+      const pricePerGram = Math.round(karat.price);
+      
+      return {
+        karat: karat.karat,
+        name: karat.name,
+        purity: karat.purity,
+        pricePerGram: pricePerGram,
+        change: goldApiData.ch ? Math.round(goldApiData.ch * 15500) : 0, // Convert USD change to IDR
+        changePercent: goldApiData.chp || 0,
+        timestamp: new Date(goldApiData.ts * 1000),
+      };
+    }));
+  }
+
   private getKaratPurity(karat: number): string {
     const purityMap: { [key: number]: string } = {
       10: "41.7%",
@@ -111,6 +149,7 @@ export class GoldPriceService {
       16: "66.7%", 
       18: "75.0%",
       20: "83.3%",
+      21: "87.5%",
       22: "91.6%",
       24: "99.9%"
     };

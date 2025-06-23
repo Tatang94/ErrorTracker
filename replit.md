@@ -89,6 +89,13 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 
 ## Recent Changes
 
+### GoldAPI.io Integration (December 27, 2024)
+- Integrasi dengan GoldAPI.io sebagai sumber utama harga emas internasional
+- Data real-time dari pasar global dengan konversi USD ke IDR
+- Mendukung semua karat emas: 10K, 14K, 16K, 18K, 20K, 21K, 22K, 24K
+- Sistem fallback ke scraping lokal jika GoldAPI tidak tersedia
+- Akurasi tinggi dengan update data pasar internasional
+
 ### Enhanced Price Accuracy System (December 27, 2024)
 - Implementasi sistem harga yang lebih akurat dengan membedakan jenis emas:
   * Logam Mulia Antam (investasi grade 24K, 99.99% kemurnian)
