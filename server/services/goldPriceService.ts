@@ -1,6 +1,8 @@
 import { storage } from "../storage";
 import type { GoldPriceData, MarketStatus } from "@shared/schema";
 import { goldScraper } from "../scraper/goldScraper";
+import { antamScraper } from "../scraper/antamScraper";
+import { jewelryScraper } from "../scraper/jewelryScraper";
 
 export class GoldPriceService {
   private readonly API_KEY = process.env.GOLD_API_KEY || "demo_key";
@@ -8,40 +10,91 @@ export class GoldPriceService {
 
   async fetchLatestPrices(): Promise<GoldPriceData[]> {
     try {
-      // Primary: Try scraping Indonesian sources (Antam, Pegadaian, etc.)
-      console.log("Fetching gold prices from Indonesian sources...");
-      const scrapedPrices = await goldScraper.scrapeAllSources();
+      console.log("Fetching comprehensive gold prices from Indonesian sources...");
       
-      if (scrapedPrices.length > 0) {
-        console.log(`Found ${scrapedPrices.length} prices from Indonesian sources`);
-        const processedData = goldScraper.convertToGoldPriceData(scrapedPrices);
-        
-        // Validate scraped prices against reasonable ranges
+      // Parallel fetching untuk efisiensi
+      const [scrapedPrices, antamPrices, jewelryPrices] = await Promise.allSettled([
+        goldScraper.scrapeAllSources(),
+        antamScraper.scrapeAntamPrices(),
+        jewelryScraper.scrapePegadaianJewelry()
+      ]);
+      
+      const allPrices: GoldPriceData[] = [];
+      
+      // Process scraped general prices
+      if (scrapedPrices.status === 'fulfilled' && scrapedPrices.value.length > 0) {
+        const processedData = goldScraper.convertToGoldPriceData(scrapedPrices.value);
         const validatedData = processedData.filter(item => 
           item.pricePerGram >= 400000 && item.pricePerGram <= 2000000
         );
-        
-        if (validatedData.length > 0) {
-          console.log(`Using ${validatedData.length} validated prices`);
-          return await this.processScrapedData(validatedData);
-        }
+        allPrices.push(...validatedData);
       }
       
-      // Secondary: Try goldpricez.com API if available
-      if (this.API_KEY !== "demo_key") {
-        console.log("Trying goldpricez.com API...");
-        const response = await fetch(`${this.API_URL}?api_key=${this.API_KEY}`);
-        
-        if (response.ok) {
-          const data = await response.json();
-          if (data && data.rates) {
-            return await this.processGoldPricezData(data);
-          }
-        }
+      // Process Antam prices (Logam Mulia - investment grade)
+      if (antamPrices.status === 'fulfilled' && antamPrices.value.length > 0) {
+        antamPrices.value.forEach(price => {
+          allPrices.push({
+            karat: 24, // Antam selalu 24K
+            name: `Logam Mulia Antam (${price.weight})`,
+            purity: "99.99%",
+            pricePerGram: price.buyPrice,
+            change: 0,
+            changePercent: 0,
+            timestamp: price.timestamp
+          });
+        });
+      } else {
+        // Fallback Antam reference
+        const antamRef = antamScraper.generateAntamReference();
+        antamRef.forEach(price => {
+          allPrices.push({
+            karat: 24,
+            name: "Logam Mulia Antam (Referensi)",
+            purity: "99.99%",
+            pricePerGram: price.buyPrice,
+            change: 0,
+            changePercent: 0,
+            timestamp: price.timestamp
+          });
+        });
       }
       
-      // Fallback to stored data
-      console.log("Using stored prices as fallback");
+      // Process jewelry prices (dengan ongkos kerja)
+      if (jewelryPrices.status === 'fulfilled' && jewelryPrices.value.length > 0) {
+        jewelryPrices.value.forEach(price => {
+          allPrices.push({
+            karat: price.karat,
+            name: `Perhiasan ${price.karat}K (${price.source})`,
+            purity: this.getKaratPurity(price.karat),
+            pricePerGram: price.buyPrice,
+            change: 0,
+            changePercent: 0,
+            timestamp: price.timestamp
+          });
+        });
+      } else {
+        // Fallback jewelry reference
+        const jewelryRef = jewelryScraper.generateJewelryReference();
+        jewelryRef.forEach(price => {
+          allPrices.push({
+            karat: price.karat,
+            name: `Perhiasan ${price.karat}K (Est.)`,
+            purity: this.getKaratPurity(price.karat),
+            pricePerGram: price.buyPrice,
+            change: 0,
+            changePercent: 0,
+            timestamp: price.timestamp
+          });
+        });
+      }
+      
+      if (allPrices.length > 0) {
+        console.log(`Compiled ${allPrices.length} comprehensive gold prices`);
+        return await this.processScrapedData(allPrices);
+      }
+      
+      // Final fallback to stored data
+      console.log("Using stored prices as final fallback");
       const storedPrices = await storage.getLatestGoldPrices();
       return this.convertStoredPrices(storedPrices);
     } catch (error) {
@@ -49,6 +102,19 @@ export class GoldPriceService {
       const storedPrices = await storage.getLatestGoldPrices();
       return this.convertStoredPrices(storedPrices);
     }
+  }
+  
+  private getKaratPurity(karat: number): string {
+    const purityMap: { [key: number]: string } = {
+      10: "41.7%",
+      14: "58.3%",
+      16: "66.7%", 
+      18: "75.0%",
+      20: "83.3%",
+      22: "91.6%",
+      24: "99.9%"
+    };
+    return purityMap[karat] || `${Math.round((karat/24)*100)}%`;
   }
 
   private async processScrapedData(scrapedData: any[]): Promise<GoldPriceData[]> {

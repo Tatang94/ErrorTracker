@@ -89,6 +89,14 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 
 ## Recent Changes
 
+### Enhanced Price Accuracy System (December 27, 2024)
+- Implementasi sistem harga yang lebih akurat dengan membedakan jenis emas:
+  * Logam Mulia Antam (investasi grade 24K, 99.99% kemurnian)
+  * Perhiasan emas dengan berbagai karat (18K, 20K, 22K, 24K) + ongkos kerja
+  * Harga buyback yang terpisah untuk setiap kategori
+- Scraper khusus untuk Antam dan toko perhiasan
+- Sistem fallback berlapis untuk memastikan data selalu tersedia
+
 ### Database Implementation (June 23, 2025)
 - Migrasi dari in-memory storage ke PostgreSQL database
 - Implementasi Drizzle ORM untuk operasi database type-safe
