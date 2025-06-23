@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Calculator } from "lucide-react";
+import { Calculator, MessageCircle } from "lucide-react";
 import { formatCurrency } from "@/lib/formatters";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 interface UnitConverterProps {
   goldPrices: { karat: number; pricePerGram: number }[];
@@ -35,18 +36,49 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
     }
   };
 
+  // Hitung harga perhiasan dengan ongkos kerja
+  const calculateJewelryPrice = (basePrice: number, karat: number) => {
+    const workmanshipRates: { [key: number]: number } = {
+      24: 0.10, // 10% untuk 24K (paling sederhana)
+      22: 0.12, // 12% untuk 22K 
+      21: 0.14, // 14% untuk 21K
+      20: 0.15, // 15% untuk 20K
+      18: 0.18, // 18% untuk 18K (paling umum)
+      16: 0.19, // 19% untuk 16K
+      14: 0.20, // 20% untuk 14K
+      10: 0.20  // 20% untuk 10K
+    };
+    
+    const workmanshipRate = workmanshipRates[karat] || 0.15;
+    return Math.round(basePrice * (1 + workmanshipRate));
+  };
+
   useEffect(() => {
     const selectedGold = goldPrices.find(p => p.karat === parseInt(goldType));
     const selectedUnit = units.find(u => u.value === unit);
     
     if (selectedGold && selectedUnit && amount > 0) {
       const totalGrams = amount * selectedUnit.multiplier;
-      const totalValue = totalGrams * selectedGold.pricePerGram;
+      const jewelryPricePerGram = calculateJewelryPrice(selectedGold.pricePerGram, selectedGold.karat);
+      const totalValue = totalGrams * jewelryPricePerGram;
       setResult(totalValue);
     } else {
       setResult(0);
     }
   }, [amount, unit, goldType, goldPrices]);
+
+  // Handle WhatsApp contact
+  const handleContactSeller = () => {
+    const selectedGold = goldPrices.find(p => p.karat === parseInt(goldType));
+    const selectedUnit = units.find(u => u.value === unit);
+    
+    if (selectedGold && selectedUnit && amount > 0) {
+      const jewelryPricePerGram = calculateJewelryPrice(selectedGold.pricePerGram, selectedGold.karat);
+      const message = `Halo, saya tertarik untuk membeli perhiasan emas ${goldType}K sebanyak ${amount} ${getUnitLabel()} dengan estimasi harga ${formatCurrency(result)}. Mohon info lebih lanjut.`;
+      const whatsappUrl = `https://wa.me/89663596711?text=${encodeURIComponent(message)}`;
+      window.open(whatsappUrl, '_blank');
+    }
+  };
 
   const getUnitLabel = () => {
     const selectedUnit = units.find(u => u.value === unit);
@@ -113,12 +145,22 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
         </div>
         
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg">
-          <div className="text-sm opacity-90 mb-1">Total Nilai</div>
+          <div className="text-sm opacity-90 mb-1">Harga Perhiasan (Termasuk Ongkos Kerja)</div>
           <div className="text-2xl font-bold">{formatCurrency(result)}</div>
           <div className="text-xs opacity-75 mt-1">
-            {amount > 0 ? `${amount} ${getUnitLabel()} emas ${goldType}K` : "Masukkan jumlah untuk menghitung"}
+            {amount > 0 ? `${amount} ${getUnitLabel()} perhiasan emas ${goldType}K` : "Masukkan jumlah untuk menghitung"}
           </div>
         </div>
+
+        {amount > 0 && result > 0 && (
+          <Button 
+            onClick={handleContactSeller}
+            className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2"
+          >
+            <MessageCircle className="h-5 w-5" />
+            Hubungi Penjual via WhatsApp
+          </Button>
+        )}
       </div>
     </div>
   );
