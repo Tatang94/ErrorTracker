@@ -96,11 +96,12 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - Seeding otomatis database dengan data sampel
 
 ### Web Scraping Implementation (June 23, 2025)
-- Implementasi web scraping untuk sumber Indonesia (harga-emas.org, logammulia.com, antam.com)
+- Implementasi web scraping untuk sumber Indonesia (harga-emas.org, logammulia.com, pegadaian.co.id)
 - Sistem fallback multi-layer: scraping → API external → database
 - User-Agent headers untuk bypass proteksi anti-bot
 - Penghapusan halaman Profile untuk menyederhanakan UI (tidak perlu login)
 - Expanded gold karat options dari 3 ke 7 jenis (10K, 14K, 16K, 18K, 20K, 22K, 24K)
+- Pergantian target scraping dari Antam ke Pegadaian untuk akses yang lebih stabil
 
 ### Price Accuracy Implementation (June 23, 2025)
 - Implementasi harga pasar realistis berdasarkan kondisi Juni 2025

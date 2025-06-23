@@ -151,9 +151,9 @@ export default function Home() {
               <div className="flex space-x-3 p-3 bg-blue-50 rounded-lg">
                 <span className="text-blue-600 mt-1">🏪</span>
                 <div>
-                  <h4 className="font-medium text-sm text-gray-800">Pegadaian & Dealer</h4>
+                  <h4 className="font-medium text-sm text-gray-800">Pegadaian (Resmi)</h4>
                   <p className="text-xs text-gray-600 mt-1">
-                    Data real-time dari toko emas dan dealer terpercaya di Indonesia
+                    Harga emas resmi dari PT Pegadaian, BUMN terpercaya untuk investasi emas
                   </p>
                 </div>
               </div>

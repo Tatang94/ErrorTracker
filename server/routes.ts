@@ -71,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ 
         message: "Harga emas berhasil diperbarui dari sumber Indonesia", 
         prices,
-        sources: ["harga-emas.org", "logammulia.com", "antam.com"]
+        sources: ["harga-emas.org", "logammulia.com", "pegadaian.co.id"]
       });
     } catch (error) {
       console.error("Error refreshing prices:", error);
@@ -85,7 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const sources = [
         { name: "harga-emas.org", type: "Market Data", country: "Indonesia" },
         { name: "logammulia.com", type: "Dealer", country: "Indonesia" },
-        { name: "antam.com", type: "Official Mint", country: "Indonesia" }
+        { name: "pegadaian.co.id", type: "Pawnshop", country: "Indonesia" }
       ];
       res.json(sources);
     } catch (error) {

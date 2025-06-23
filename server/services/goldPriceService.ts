@@ -40,12 +40,14 @@ export class GoldPriceService {
         }
       }
       
-      // Fallback to realistic market prices (updated June 2025)
-      console.log("Using current market prices as fallback");
-      return this.generateRealisticPrices();
+      // Fallback to stored data
+      console.log("Using stored prices as fallback");
+      const storedPrices = await storage.getLatestGoldPrices();
+      return this.convertStoredPrices(storedPrices);
     } catch (error) {
       console.error("Error fetching gold prices:", error);
-      return this.generateRealisticPrices();
+      const storedPrices = await storage.getLatestGoldPrices();
+      return this.convertStoredPrices(storedPrices);
     }
   }
 
