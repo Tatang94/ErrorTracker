@@ -95,15 +95,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   const httpServer = createServer(app);
 
-  // Set up price update interval (every 5 minutes)
+  // Set up price update interval (every 1 week)
   setInterval(async () => {
     try {
       await goldPriceService.updatePrices();
-      console.log("Gold prices updated automatically");
+      console.log("Gold prices updated automatically (weekly)");
     } catch (error) {
       console.error("Error in automatic price update:", error);
     }
-  }, 5 * 60 * 1000); // 5 minutes
+  }, 7 * 24 * 60 * 60 * 1000); // 1 week
 
   return httpServer;
 }

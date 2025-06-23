@@ -85,11 +85,12 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - **Endpoint**: `https://www.goldpricez.com/api/rates/currency/IDR`
 - **Authentication**: Menggunakan API key (`GOLD_API_KEY`)
 - **Data Format**: Harga per gram dalam IDR untuk berbagai karat emas
-- **Update Frequency**: Setiap 5 menit dengan option manual refresh
+- **Update Frequency**: Setiap 1 minggu dengan option manual refresh
 
 ## Recent Changes
 
-### Jewelry Calculator & WhatsApp Integration (December 27, 2024)
+### Weekly Price Update & PPN Integration (December 27, 2024)
+- Update harga emas otomatis setiap 1 minggu untuk efisiensi API
 - Kalkulator menggunakan harga perhiasan dengan PPN 11% untuk semua karat
 - Tombol WhatsApp otomatis redirect ke wa.me/89663596711
 - Pesan otomatis berisi detail perhiasan dan estimasi harga
