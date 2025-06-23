@@ -8,7 +8,6 @@ import Home from "@/pages/Home";
 import Chart from "@/pages/Chart";
 import Calculator from "@/pages/Calculator";
 import History from "@/pages/History";
-import Profile from "@/pages/Profile";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -19,7 +18,6 @@ function Router() {
         <Route path="/chart" component={Chart} />
         <Route path="/calculator" component={Calculator} />
         <Route path="/history" component={History} />
-        <Route path="/profile" component={Profile} />
         <Route component={NotFound} />
       </Switch>
       <BottomNavigation />

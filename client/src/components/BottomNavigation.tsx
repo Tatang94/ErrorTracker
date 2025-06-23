@@ -10,7 +10,6 @@ export function BottomNavigation() {
     { path: "/chart", icon: TrendingUp, label: "Grafik" },
     { path: "/calculator", icon: Calculator, label: "Kalkulator" },
     { path: "/history", icon: History, label: "Riwayat" },
-    { path: "/profile", icon: User, label: "Profil" },
   ];
 
   return (

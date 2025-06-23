@@ -1,4 +1,4 @@
-import { Bell, Settings, RefreshCw } from "lucide-react";
+import { Bell, RefreshCw } from "lucide-react";
 import { formatTime } from "@/lib/formatters";
 import { useRefreshPrices } from "@/hooks/useGoldPrices";
 import { Button } from "@/components/ui/button";
@@ -37,15 +37,9 @@ export function Header({ lastUpdate }: HeaderProps) {
             variant="ghost"
             size="sm"
             className="p-2 rounded-full hover:bg-blue-600 transition-colors text-white"
+            title="Notifikasi"
           >
             <Bell className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="p-2 rounded-full hover:bg-blue-600 transition-colors text-white"
-          >
-            <Settings className="h-4 w-4" />
           </Button>
         </div>
       </div>

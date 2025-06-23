@@ -15,7 +15,11 @@ export class GoldScraper {
   async scrapeHargaEmasOrg(): Promise<ScrapedGoldPrice[]> {
     try {
       console.log('Scraping harga-emas.org...');
-      const response = await fetch('https://harga-emas.org');
+      const response = await fetch('https://harga-emas.org', {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -65,7 +69,11 @@ export class GoldScraper {
   async scrapeLogamMulia(): Promise<ScrapedGoldPrice[]> {
     try {
       console.log('Scraping logammulia.com...');
-      const response = await fetch('https://logammulia.com/id/harga-emas-hari-ini');
+      const response = await fetch('https://logammulia.com/id/harga-emas-hari-ini', {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
@@ -113,7 +121,11 @@ export class GoldScraper {
     try {
       console.log('Scraping Antam prices...');
       // Antam doesn't have direct API, but we can try their website
-      const response = await fetch('https://www.antam.com/harga-emas');
+      const response = await fetch('https://www.antam.com/harga-emas', {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);

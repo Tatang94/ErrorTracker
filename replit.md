@@ -41,10 +41,11 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 
 ### Frontend Features
 - **Real-time Price Display**: Harga emas live dengan indikator perubahan
-- **Interactive Charts**: Visualisasi riwayat harga dengan berbagai timeframe
+- **Interactive Charts**: Visualisasi riwayat harga dengan berbagai timeframe  
 - **Unit Calculator**: Konversi antara gram, ons, dan kilogram
 - **Price History**: Analisis data historis dengan opsi filter
 - **Market Status**: Status pasar real-time (buka/tutup)
+- **Indonesian Sources**: Scraping data dari sumber lokal terpercaya
 
 ### API Endpoints
 - `GET /api/gold-prices` - Harga emas terbaru untuk semua jenis karat
@@ -52,6 +53,7 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - `GET /api/price-history/:karat` - Data harga historis dengan rentang tanggal
 - `GET /api/chart-data/:karat` - Data terformat untuk visualisasi grafik
 - `POST /api/refresh-prices` - Trigger refresh harga manual
+- `GET /api/sources` - Daftar sumber data yang tersedia
 
 ## Data Flow
 
@@ -93,13 +95,15 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - Schema tabel untuk gold_prices dan price_history
 - Seeding otomatis database dengan data sampel
 
-### API Integration Update (June 23, 2025)
-- Update integrasi API dari metals-api.com ke goldpricez.com
-- Implementasi processGoldPricezData untuk format data yang tepat
-- Fallback mechanism untuk data tersimpan jika API tidak tersedia
+### Web Scraping Implementation (June 23, 2025)
+- Implementasi web scraping untuk sumber Indonesia (harga-emas.org, logammulia.com, antam.com)
+- Sistem fallback multi-layer: scraping → API external → database
+- User-Agent headers untuk bypass proteksi anti-bot
+- Penghapusan halaman Profile untuk menyederhanakan UI (tidak perlu login)
 
 ## User Preferences
 
 - **Bahasa**: Indonesia - pengguna lebih nyaman dengan penjelasan dalam bahasa Indonesia
-- **Communication Style**: Penjelasan sederhana dan mudah dipahami, hindari istilah teknis yang rumit
-- **Data Source**: Menggunakan goldpricez.com untuk data harga emas yang akurat
+- **Communication Style**: Penjelasan sederhana dan mudah dipahami, hindari istilah teknis yang rumit  
+- **Data Source**: Prioritas sumber Indonesia (scraping lokal) daripada API internasional
+- **UI Simplicity**: Tidak perlu sistem login/registrasi, hapus halaman Profile
