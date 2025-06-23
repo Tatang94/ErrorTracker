@@ -10,7 +10,8 @@ interface UnitConverterProps {
 }
 
 export function UnitConverter({ goldPrices }: UnitConverterProps) {
-  const [amount, setAmount] = useState(1);
+  const [amount, setAmount] = useState<number>(1);
+  const [amountInput, setAmountInput] = useState<string>("1");
   const [unit, setUnit] = useState("gram");
   const [goldType, setGoldType] = useState("24");
   const [result, setResult] = useState(0);
@@ -21,14 +22,29 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
     { value: "kg", label: "kg", multiplier: 1000 },
   ];
 
+  // Handle input change dengan validation
+  const handleAmountChange = (value: string) => {
+    setAmountInput(value);
+    
+    // Parse nilai, pastikan tetap positif dan tidak NaN
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && numValue >= 0) {
+      setAmount(numValue);
+    } else if (value === "" || value === "0") {
+      setAmount(0);
+    }
+  };
+
   useEffect(() => {
     const selectedGold = goldPrices.find(p => p.karat === parseInt(goldType));
     const selectedUnit = units.find(u => u.value === unit);
     
-    if (selectedGold && selectedUnit) {
+    if (selectedGold && selectedUnit && amount > 0) {
       const totalGrams = amount * selectedUnit.multiplier;
       const totalValue = totalGrams * selectedGold.pricePerGram;
       setResult(totalValue);
+    } else {
+      setResult(0);
     }
   }, [amount, unit, goldType, goldPrices]);
 
@@ -53,10 +69,12 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
             <Input
               id="amount"
               type="number"
-              value={amount}
-              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+              value={amountInput}
+              onChange={(e) => handleAmountChange(e.target.value)}
               className="flex-1 rounded-r-none text-lg font-semibold"
               placeholder="1"
+              min="0"
+              step="0.01"
             />
             <Select value={unit} onValueChange={setUnit}>
               <SelectTrigger className="w-24 rounded-l-none border-l-0">
@@ -84,6 +102,7 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
             <SelectContent>
               <SelectItem value="24">24 Karat (99.9%)</SelectItem>
               <SelectItem value="22">22 Karat (91.6%)</SelectItem>
+              <SelectItem value="21">21 Karat (87.5%)</SelectItem>
               <SelectItem value="20">20 Karat (83.3%)</SelectItem>
               <SelectItem value="18">18 Karat (75%)</SelectItem>
               <SelectItem value="16">16 Karat (66.7%)</SelectItem>
@@ -97,7 +116,7 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
           <div className="text-sm opacity-90 mb-1">Total Nilai</div>
           <div className="text-2xl font-bold">{formatCurrency(result)}</div>
           <div className="text-xs opacity-75 mt-1">
-            {amount} {getUnitLabel()} emas {goldType}K
+            {amount > 0 ? `${amount} ${getUnitLabel()} emas ${goldType}K` : "Masukkan jumlah untuk menghitung"}
           </div>
         </div>
       </div>
