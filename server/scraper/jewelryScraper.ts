@@ -66,7 +66,7 @@ export class JewelryScraper {
   
   // Generate harga perhiasan berdasarkan harga emas murni
   generateJewelryReference(): JewelryPrice[] {
-    const basePrice24K = 1125000;
+    const basePrice24K = 1710000;
     
     const jewelryTypes = [
       { karat: 18, purity: 0.75, workmanship: 0.20 },

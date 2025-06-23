@@ -83,7 +83,7 @@ export class AntamScraper {
   
   // Fallback dengan harga referensi Antam terkini (berdasarkan market rate)
   generateAntamReference(): AntamPrice[] {
-    const basePrice24K = 1125000; // Harga pasar saat ini per gram 24K
+    const basePrice24K = 1710000; // Harga pasar saat ini per gram 24K (Dec 2024)
     const buybackDiscount = 0.95; // Buyback biasanya 5% lebih rendah
     
     return [

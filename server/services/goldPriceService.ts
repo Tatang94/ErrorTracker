@@ -135,7 +135,7 @@ export class GoldPriceService {
         name: karat.name,
         purity: karat.purity,
         pricePerGram: pricePerGram,
-        change: goldApiData.ch ? Math.round(goldApiData.ch * 15500) : 0, // Convert USD change to IDR
+        change: goldApiData.ch ? Math.round(goldApiData.ch * 16412) : 0, // Convert USD change to IDR
         changePercent: goldApiData.chp || 0,
         timestamp: new Date(goldApiData.ts * 1000),
       };

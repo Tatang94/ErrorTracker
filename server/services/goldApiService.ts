@@ -27,7 +27,7 @@ export interface GoldApiResponse {
 export class GoldApiService {
   private readonly API_TOKEN = 'goldapi-1z9019mboum1uw-io';
   private readonly BASE_URL = 'https://www.goldapi.io/api';
-  private readonly USD_TO_IDR_RATE = 15500; // Approximate rate, should be updated regularly
+  private readonly USD_TO_IDR_RATE = 16412; // Current USD to IDR rate
 
   async fetchGoldPrice(): Promise<GoldApiResponse | null> {
     try {

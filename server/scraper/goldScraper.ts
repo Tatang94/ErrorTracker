@@ -188,7 +188,7 @@ export class GoldScraper {
       
       // Fallback: use current market reference if no data found
       if (prices.length === 0) {
-        const marketPrice = 1125000; // Current 24K market price
+        const marketPrice = 1710000; // Current 24K market price (Dec 2024)
         prices.push({
           source: 'pegadaian.co.id',
           karat: 24,
