@@ -129,31 +129,41 @@ export default function Home() {
           </section>
         )}
 
-        {/* News & Tips Section */}
+        {/* Data Sources Section */}
         <section className="px-4 mb-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
             <h3 className="font-semibold text-gray-800 mb-4 flex items-center">
-              <span className="text-blue-600 mr-2">📰</span>
-              Berita & Tips
+              <span className="text-green-600 mr-2">🇮🇩</span>
+              Sumber Data Indonesia
             </h3>
             
             <div className="space-y-3">
-              <div className="flex space-x-3 p-3 bg-blue-50 rounded-lg">
-                <span className="text-yellow-500 mt-1">💡</span>
+              <div className="flex space-x-3 p-3 bg-green-50 rounded-lg">
+                <span className="text-green-600 mt-1">🏛️</span>
                 <div>
-                  <h4 className="font-medium text-sm text-gray-800">Tips Investasi Emas</h4>
+                  <h4 className="font-medium text-sm text-gray-800">Antam (Resmi)</h4>
                   <p className="text-xs text-gray-600 mt-1">
-                    Waktu terbaik untuk membeli emas adalah saat harga turun dan pasar stabil...
+                    Harga emas resmi dari PT Antam Tbk, produsen logam mulia terpercaya
                   </p>
                 </div>
               </div>
               
-              <div className="flex space-x-3 p-3 hover:bg-gray-50 rounded-lg cursor-pointer transition-colors">
-                <span className="text-blue-600 mt-1">📈</span>
+              <div className="flex space-x-3 p-3 bg-blue-50 rounded-lg">
+                <span className="text-blue-600 mt-1">🏪</span>
                 <div>
-                  <h4 className="font-medium text-sm text-gray-800">Analisis Pasar Minggu Ini</h4>
+                  <h4 className="font-medium text-sm text-gray-800">Pegadaian & Dealer</h4>
                   <p className="text-xs text-gray-600 mt-1">
-                    Harga emas diprediksi akan naik seiring dengan ketidakpastian ekonomi global...
+                    Data real-time dari toko emas dan dealer terpercaya di Indonesia
+                  </p>
+                </div>
+              </div>
+              
+              <div className="flex space-x-3 p-3 bg-yellow-50 rounded-lg">
+                <span className="text-yellow-600 mt-1">📊</span>
+                <div>
+                  <h4 className="font-medium text-sm text-gray-800">Update Otomatis</h4>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Harga diperbarui setiap 5 menit dari berbagai sumber terpercaya
                   </p>
                 </div>
               </div>

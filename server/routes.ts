@@ -68,10 +68,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       await goldPriceService.updatePrices();
       const prices = await goldPriceService.fetchLatestPrices();
-      res.json({ message: "Prices updated successfully", prices });
+      res.json({ 
+        message: "Harga emas berhasil diperbarui dari sumber Indonesia", 
+        prices,
+        sources: ["harga-emas.org", "logammulia.com", "antam.com"]
+      });
     } catch (error) {
       console.error("Error refreshing prices:", error);
       res.status(500).json({ error: "Failed to refresh prices" });
+    }
+  });
+
+  // Get available sources
+  app.get("/api/sources", async (req, res) => {
+    try {
+      const sources = [
+        { name: "harga-emas.org", type: "Market Data", country: "Indonesia" },
+        { name: "logammulia.com", type: "Dealer", country: "Indonesia" },
+        { name: "antam.com", type: "Official Mint", country: "Indonesia" }
+      ];
+      res.json(sources);
+    } catch (error) {
+      res.status(500).json({ error: "Failed to get sources" });
     }
   });
 

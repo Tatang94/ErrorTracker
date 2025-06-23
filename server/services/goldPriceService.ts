@@ -1,5 +1,6 @@
 import { storage } from "../storage";
 import type { GoldPriceData, MarketStatus } from "@shared/schema";
+import { goldScraper } from "../scraper/goldScraper";
 
 export class GoldPriceService {
   private readonly API_KEY = process.env.GOLD_API_KEY || "demo_key";
@@ -7,29 +8,53 @@ export class GoldPriceService {
 
   async fetchLatestPrices(): Promise<GoldPriceData[]> {
     try {
-      // Fetch from goldpricez.com API
-      const response = await fetch(`${this.API_URL}?api_key=${this.API_KEY}`);
+      // Primary: Try scraping Indonesian sources (Antam, Pegadaian, etc.)
+      console.log("Fetching gold prices from Indonesian sources...");
+      const scrapedPrices = await goldScraper.scrapeAllSources();
       
-      if (response.ok) {
-        const data = await response.json();
-        if (data && data.rates) {
-          return await this.processGoldPricezData(data);
+      if (scrapedPrices.length > 0) {
+        console.log(`Found ${scrapedPrices.length} prices from Indonesian sources`);
+        const processedData = goldScraper.convertToGoldPriceData(scrapedPrices);
+        return await this.processScrapedData(processedData);
+      }
+      
+      // Secondary: Try goldpricez.com API if available
+      if (this.API_KEY !== "demo_key") {
+        console.log("Trying goldpricez.com API...");
+        const response = await fetch(`${this.API_URL}?api_key=${this.API_KEY}`);
+        
+        if (response.ok) {
+          const data = await response.json();
+          if (data && data.rates) {
+            return await this.processGoldPricezData(data);
+          }
         }
       }
       
-      // Fallback to stored data if API fails
+      // Fallback to stored data
+      console.log("Using stored prices as fallback");
       const storedPrices = await storage.getLatestGoldPrices();
       return this.convertStoredPrices(storedPrices);
     } catch (error) {
       console.error("Error fetching gold prices:", error);
-      // Return stored data as fallback
       const storedPrices = await storage.getLatestGoldPrices();
       return this.convertStoredPrices(storedPrices);
     }
   }
 
+  private async processScrapedData(scrapedData: any[]): Promise<GoldPriceData[]> {
+    return Promise.all(scrapedData.map(async item => ({
+      karat: item.karat,
+      name: item.name,
+      purity: item.purity,
+      pricePerGram: item.pricePerGram,
+      change: await this.calculatePriceChange(item.karat, item.pricePerGram),
+      changePercent: await this.calculateChangePercent(item.karat, item.pricePerGram),
+      timestamp: item.timestamp,
+    })));
+  }
+
   private async processGoldPricezData(apiData: any): Promise<GoldPriceData[]> {
-    // goldpricez.com returns rates in IDR per gram for different purities
     const rates = apiData.rates;
     
     const karatData = [
@@ -39,7 +64,7 @@ export class GoldPriceService {
     ];
 
     return Promise.all(karatData.map(async karat => {
-      const pricePerGram = rates[karat.rateKey] || rates.gold || 1095000; // fallback to sample price
+      const pricePerGram = rates[karat.rateKey] || rates.gold || 1095000;
       
       return {
         karat: karat.karat,

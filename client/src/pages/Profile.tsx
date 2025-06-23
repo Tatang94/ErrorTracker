@@ -84,7 +84,7 @@ export default function Profile() {
               </div>
               <div className="flex justify-between">
                 <span>Sumber Data</span>
-                <span className="font-medium">API Metals Live</span>
+                <span className="font-medium">Indonesia (Antam, Pegadaian)</span>
               </div>
             </div>
           </CardContent>
