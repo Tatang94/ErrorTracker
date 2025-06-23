@@ -36,10 +36,10 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
     }
   };
 
-  // Hitung harga perhiasan dengan ongkos kerja 10%
+  // Hitung harga perhiasan dengan PPN 11%
   const calculateJewelryPrice = (basePrice: number, karat: number) => {
-    const workmanshipRate = 0.10; // 10% komisi untuk semua jenis emas
-    return Math.round(basePrice * (1 + workmanshipRate));
+    const ppnRate = 0.11; // PPN 11% untuk semua jenis emas
+    return Math.round(basePrice * (1 + ppnRate));
   };
 
   useEffect(() => {
@@ -134,7 +134,7 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
         </div>
         
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg">
-          <div className="text-sm opacity-90 mb-1">Harga Perhiasan (Termasuk Komisi 10%)</div>
+          <div className="text-sm opacity-90 mb-1">Harga Perhiasan (Sudah Sama PPN 11%)</div>
           <div className="text-2xl font-bold">{formatCurrency(result)}</div>
           <div className="text-xs opacity-75 mt-1">
             {amount > 0 ? `${amount} ${getUnitLabel()} perhiasan emas ${goldType}K` : "Masukkan jumlah untuk menghitung"}
