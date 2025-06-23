@@ -8,7 +8,11 @@ export async function seedDatabase() {
   const initialPrices = [
     { karat: 24, pricePerGram: 1095000, change: 15000, changePercent: 1.4 },
     { karat: 22, pricePerGram: 1003000, change: 12500, changePercent: 1.3 },
+    { karat: 20, pricePerGram: 912500, change: 8000, changePercent: 0.9 },
     { karat: 18, pricePerGram: 821250, change: -5750, changePercent: -0.7 },
+    { karat: 16, pricePerGram: 730000, change: -3200, changePercent: -0.4 },
+    { karat: 14, pricePerGram: 638750, change: 2100, changePercent: 0.3 },
+    { karat: 10, pricePerGram: 456250, change: -1800, changePercent: -0.4 },
   ];
 
   // Insert initial prices

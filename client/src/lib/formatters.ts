@@ -54,7 +54,11 @@ export const getKaratInfo = (karat: number) => {
   const karatData = {
     24: { name: 'Emas 24 Karat', purity: '99.9% Murni', class: 'gradient-24k' },
     22: { name: 'Emas 22 Karat', purity: '91.6% Murni', class: 'gradient-22k' },
+    20: { name: 'Emas 20 Karat', purity: '83.3% Murni', class: 'gradient-20k' },
     18: { name: 'Emas 18 Karat', purity: '75% Murni', class: 'gradient-18k' },
+    16: { name: 'Emas 16 Karat', purity: '66.7% Murni', class: 'gradient-16k' },
+    14: { name: 'Emas 14 Karat', purity: '58.3% Murni', class: 'gradient-14k' },
+    10: { name: 'Emas 10 Karat', purity: '41.7% Murni', class: 'gradient-10k' },
   };
   
   return karatData[karat as keyof typeof karatData] || {

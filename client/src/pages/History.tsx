@@ -14,7 +14,11 @@ export default function History() {
   const karatOptions = [
     { karat: 24, label: "24K" },
     { karat: 22, label: "22K" },
+    { karat: 20, label: "20K" },
     { karat: 18, label: "18K" },
+    { karat: 16, label: "16K" },
+    { karat: 14, label: "14K" },
+    { karat: 10, label: "10K" },
   ];
 
   const periodOptions = [

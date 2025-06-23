@@ -84,7 +84,11 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
             <SelectContent>
               <SelectItem value="24">24 Karat (99.9%)</SelectItem>
               <SelectItem value="22">22 Karat (91.6%)</SelectItem>
+              <SelectItem value="20">20 Karat (83.3%)</SelectItem>
               <SelectItem value="18">18 Karat (75%)</SelectItem>
+              <SelectItem value="16">16 Karat (66.7%)</SelectItem>
+              <SelectItem value="14">14 Karat (58.3%)</SelectItem>
+              <SelectItem value="10">10 Karat (41.7%)</SelectItem>
             </SelectContent>
           </Select>
         </div>

@@ -33,7 +33,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const karat = parseInt(req.params.karat);
       const days = parseInt(req.query.days as string) || 7;
       
-      if (!karat || ![18, 22, 24].includes(karat)) {
+      if (!karat || ![10, 14, 16, 18, 20, 22, 24].includes(karat)) {
         return res.status(400).json({ error: "Invalid karat value" });
       }
       
@@ -51,7 +51,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const karat = parseInt(req.params.karat);
       const timeframe = req.query.timeframe as string || "1D";
       
-      if (!karat || ![18, 22, 24].includes(karat)) {
+      if (!karat || ![10, 14, 16, 18, 20, 22, 24].includes(karat)) {
         return res.status(400).json({ error: "Invalid karat value" });
       }
       

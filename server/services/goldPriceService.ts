@@ -60,7 +60,11 @@ export class GoldPriceService {
     const karatData = [
       { karat: 24, name: "Emas 24 Karat", purity: "99.9% Murni", rateKey: "24k" },
       { karat: 22, name: "Emas 22 Karat", purity: "91.6% Murni", rateKey: "22k" },
+      { karat: 20, name: "Emas 20 Karat", purity: "83.3% Murni", rateKey: "20k" },
       { karat: 18, name: "Emas 18 Karat", purity: "75% Murni", rateKey: "18k" },
+      { karat: 16, name: "Emas 16 Karat", purity: "66.7% Murni", rateKey: "16k" },
+      { karat: 14, name: "Emas 14 Karat", purity: "58.3% Murni", rateKey: "14k" },
+      { karat: 10, name: "Emas 10 Karat", purity: "41.7% Murni", rateKey: "10k" },
     ];
 
     return Promise.all(karatData.map(async karat => {

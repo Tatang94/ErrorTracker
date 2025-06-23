@@ -78,8 +78,24 @@
     background: linear-gradient(135deg, #FFED4E 0%, #F59E0B 100%);
   }
   
+  .gradient-20k {
+    background: linear-gradient(135deg, #F59E0B 0%, #EA580C 100%);
+  }
+  
   .gradient-18k {
-    background: linear-gradient(135deg, #F59E0B 0%, #DC2626 100%);
+    background: linear-gradient(135deg, #EA580C 0%, #DC2626 100%);
+  }
+  
+  .gradient-16k {
+    background: linear-gradient(135deg, #DC2626 0%, #B91C1C 100%);
+  }
+  
+  .gradient-14k {
+    background: linear-gradient(135deg, #B91C1C 0%, #991B1B 100%);
+  }
+  
+  .gradient-10k {
+    background: linear-gradient(135deg, #991B1B 0%, #7F1D1D 100%);
   }
   
   .text-success {

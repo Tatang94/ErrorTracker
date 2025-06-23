@@ -224,7 +224,11 @@ export class GoldScraper {
     const karatInfo = {
       24: { name: "Emas 24 Karat", purity: "99.9% Murni" },
       22: { name: "Emas 22 Karat", purity: "91.6% Murni" },
+      20: { name: "Emas 20 Karat", purity: "83.3% Murni" },
       18: { name: "Emas 18 Karat", purity: "75% Murni" },
+      16: { name: "Emas 16 Karat", purity: "66.7% Murni" },
+      14: { name: "Emas 14 Karat", purity: "58.3% Murni" },
+      10: { name: "Emas 10 Karat", purity: "41.7% Murni" },
     };
     
     const result: any[] = [];
