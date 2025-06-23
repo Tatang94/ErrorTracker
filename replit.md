@@ -2,105 +2,104 @@
 
 ## Overview
 
-EmasKu is a modern gold price tracking application built with a full-stack TypeScript architecture. It provides real-time gold price monitoring, historical data visualization, price calculations, and market analysis for Indonesian gold markets (IDR currency). The application features a mobile-first design with a React frontend and Express.js backend.
+EmasKu adalah aplikasi modern untuk memantau harga emas real-time dengan mata uang Rupiah Indonesia. Aplikasi ini dibangun dengan arsitektur full-stack TypeScript dan menggunakan desain mobile-first yang mirip dengan superapp.
 
 ## System Architecture
 
 ### Frontend Architecture
-- **Framework**: React 18 with TypeScript
-- **Build Tool**: Vite for fast development and optimized production builds
-- **Routing**: Wouter for lightweight client-side routing
-- **State Management**: TanStack Query for server state management
-- **UI Components**: Radix UI primitives with shadcn/ui design system
-- **Styling**: Tailwind CSS with custom design tokens for gold-themed colors
-- **Charts**: Recharts for price visualization
-- **Mobile-First**: Responsive design optimized for mobile devices
+- **Framework**: React 18 dengan TypeScript
+- **Build Tool**: Vite untuk development dan build produksi yang optimal
+- **Routing**: Wouter untuk client-side routing yang ringan
+- **State Management**: TanStack Query untuk manajemen server state
+- **UI Components**: Radix UI primitives dengan shadcn/ui design system
+- **Styling**: Tailwind CSS dengan custom design tokens bertema emas
+- **Charts**: Recharts untuk visualisasi harga
+- **Mobile-First**: Desain responsif yang dioptimalkan untuk perangkat mobile
 
 ### Backend Architecture
-- **Runtime**: Node.js with Express.js framework
-- **Language**: TypeScript with ES modules
+- **Runtime**: Node.js dengan Express.js framework
+- **Language**: TypeScript dengan ES modules
 - **API Pattern**: RESTful API design
-- **Database ORM**: Drizzle ORM for type-safe database operations
-- **Database**: PostgreSQL (configured for Neon serverless)
-- **Session Management**: Connect-pg-simple for PostgreSQL session storage
-- **Development**: Hot module replacement with Vite integration
+- **Database**: PostgreSQL dengan Drizzle ORM untuk operasi type-safe
+- **External API**: goldpricez.com untuk data harga emas real-time
+- **Session Management**: Connect-pg-simple untuk penyimpanan session PostgreSQL
+- **Development**: Hot module replacement dengan integrasi Vite
 
 ### Database Schema
-Two main tables manage gold price data:
-- **gold_prices**: Current gold prices with change indicators
-- **price_history**: Historical price data for trend analysis
+Dua tabel utama untuk mengelola data harga emas:
+- **gold_prices**: Harga emas terkini dengan indikator perubahan
+- **price_history**: Data harga historis untuk analisis tren
 
-Supports multiple gold karat types (18K, 22K, 24K) with price per gram in IDR currency.
+Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata uang IDR.
 
 ## Key Components
 
 ### Data Services
-- **Gold Price Service**: Handles external API integration and data processing
-- **Storage Layer**: Abstracted storage interface with in-memory fallback
-- **Price Calculator**: Unit conversion and investment calculations
+- **Gold Price Service**: Menangani integrasi API eksternal dan pemrosesan data
+- **Storage Layer**: Interface storage yang diabstraksi dengan database PostgreSQL
+- **Price Calculator**: Konversi unit dan kalkulasi investasi
 
 ### Frontend Features
-- **Real-time Price Display**: Live gold prices with change indicators
-- **Interactive Charts**: Price history visualization with multiple timeframes
-- **Unit Calculator**: Convert between grams, ounces, and kilograms
-- **Price History**: Historical data analysis with filtering options
-- **Market Status**: Real-time market open/close status
+- **Real-time Price Display**: Harga emas live dengan indikator perubahan
+- **Interactive Charts**: Visualisasi riwayat harga dengan berbagai timeframe
+- **Unit Calculator**: Konversi antara gram, ons, dan kilogram
+- **Price History**: Analisis data historis dengan opsi filter
+- **Market Status**: Status pasar real-time (buka/tutup)
 
 ### API Endpoints
-- `GET /api/gold-prices` - Latest gold prices for all karat types
-- `GET /api/market-status` - Current market status and overall trends
-- `GET /api/price-history/:karat` - Historical price data with date range
-- `GET /api/chart-data/:karat` - Formatted data for chart visualization
-- `POST /api/refresh-prices` - Manual price refresh trigger
+- `GET /api/gold-prices` - Harga emas terbaru untuk semua jenis karat
+- `GET /api/market-status` - Status pasar saat ini dan tren keseluruhan
+- `GET /api/price-history/:karat` - Data harga historis dengan rentang tanggal
+- `GET /api/chart-data/:karat` - Data terformat untuk visualisasi grafik
+- `POST /api/refresh-prices` - Trigger refresh harga manual
 
 ## Data Flow
 
-1. **Price Fetching**: External API integration with fallback to stored data
-2. **Data Processing**: Currency conversion (USD to IDR) and karat calculations
-3. **Storage**: Persistent storage in PostgreSQL with caching layer
-4. **Real-time Updates**: 5-minute refresh intervals with manual refresh option
-5. **Client Sync**: React Query manages client-side caching and synchronization
+1. **Price Fetching**: Integrasi API eksternal dengan goldpricez.com
+2. **Data Processing**: Pemrosesan data harga emas dalam IDR untuk berbagai karat
+3. **Storage**: Penyimpanan persisten di PostgreSQL dengan layer caching
+4. **Real-time Updates**: Interval refresh 5 menit dengan opsi refresh manual
+5. **Client Sync**: React Query mengelola caching dan sinkronisasi client-side
 
 ## External Dependencies
 
 ### Core Dependencies
-- **Database**: @neondatabase/serverless for PostgreSQL connection
-- **ORM**: drizzle-orm with PostgreSQL dialect
-- **UI Framework**: React with Radix UI primitives
-- **Charts**: recharts for data visualization
-- **Forms**: react-hook-form with zod validation
-- **Dates**: date-fns for date manipulation
+- **Database**: @neondatabase/serverless untuk koneksi PostgreSQL
+- **ORM**: drizzle-orm dengan dialect PostgreSQL
+- **UI Framework**: React dengan Radix UI primitives
+- **Charts**: recharts untuk visualisasi data
+- **Forms**: react-hook-form dengan validasi zod
+- **Dates**: date-fns untuk manipulasi tanggal
 
 ### Development Tools
-- **Build**: Vite with React plugin
-- **TypeScript**: Full type safety across the stack
-- **Database Migrations**: drizzle-kit for schema management
-- **Process Management**: tsx for TypeScript execution
+- **Build**: Vite dengan React plugin
+- **TypeScript**: Type safety penuh di seluruh stack
+- **Database Migrations**: drizzle-kit untuk manajemen schema
+- **Process Management**: tsx untuk eksekusi TypeScript
 
-## Deployment Strategy
+## External API Integration
 
-### Replit Configuration
-- **Runtime**: Node.js 20 with PostgreSQL 16
-- **Build Process**: Vite build for client + esbuild for server
-- **Development**: Hot reload with file watching
-- **Production**: Optimized static asset serving
+### goldpricez.com API
+- **Endpoint**: `https://www.goldpricez.com/api/rates/currency/IDR`
+- **Authentication**: Menggunakan API key (`GOLD_API_KEY`)
+- **Data Format**: Harga per gram dalam IDR untuk berbagai karat emas
+- **Update Frequency**: Setiap 5 menit dengan option manual refresh
 
-### Build Process
-1. Client assets compiled with Vite to `dist/public`
-2. Server code bundled with esbuild to `dist/index.js`
-3. Static file serving integrated with Express
-4. Environment-based configuration
+## Recent Changes
 
-### Environment Variables
-- `DATABASE_URL`: PostgreSQL connection string
-- `NODE_ENV`: Environment mode (development/production)
-- `GOLD_API_KEY` or `METALS_API_KEY`: External API authentication
+### Database Implementation (June 23, 2025)
+- Migrasi dari in-memory storage ke PostgreSQL database
+- Implementasi Drizzle ORM untuk operasi database type-safe
+- Schema tabel untuk gold_prices dan price_history
+- Seeding otomatis database dengan data sampel
 
-## Changelog
-
-Changelog:
-- June 23, 2025. Initial setup
+### API Integration Update (June 23, 2025)
+- Update integrasi API dari metals-api.com ke goldpricez.com
+- Implementasi processGoldPricezData untuk format data yang tepat
+- Fallback mechanism untuk data tersimpan jika API tidak tersedia
 
 ## User Preferences
 
-Preferred communication style: Simple, everyday language.
+- **Bahasa**: Indonesia - pengguna lebih nyaman dengan penjelasan dalam bahasa Indonesia
+- **Communication Style**: Penjelasan sederhana dan mudah dipahami, hindari istilah teknis yang rumit
+- **Data Source**: Menggunakan goldpricez.com untuk data harga emas yang akurat

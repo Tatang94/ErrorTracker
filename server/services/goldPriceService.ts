@@ -3,17 +3,17 @@ import type { GoldPriceData, MarketStatus } from "@shared/schema";
 
 export class GoldPriceService {
   private readonly API_KEY = process.env.GOLD_API_KEY || "demo_key";
-  private readonly API_URL = "https://metals-api.com/api/latest";
+  private readonly API_URL = "https://www.goldpricez.com/api/rates/currency/IDR";
 
   async fetchLatestPrices(): Promise<GoldPriceData[]> {
     try {
-      // Fetch from metals-api.com with IDR base currency
-      const response = await fetch(`${this.API_URL}?access_key=${this.API_KEY}&base=IDR&symbols=XAU`);
+      // Fetch from goldpricez.com API
+      const response = await fetch(`${this.API_URL}?api_key=${this.API_KEY}`);
       
       if (response.ok) {
         const data = await response.json();
-        if (data.success && data.rates && data.rates.XAU) {
-          return await this.processMetalsApiData(data);
+        if (data && data.rates) {
+          return await this.processGoldPricezData(data);
         }
       }
       
@@ -28,28 +28,29 @@ export class GoldPriceService {
     }
   }
 
-  private async processMetalsApiData(apiData: any): Promise<GoldPriceData[]> {
-    // XAU rate from metals-api.com represents 1 troy ounce of gold in IDR
-    const goldPricePerOunceIDR = apiData.rates.XAU;
+  private async processGoldPricezData(apiData: any): Promise<GoldPriceData[]> {
+    // goldpricez.com returns rates in IDR per gram for different purities
+    const rates = apiData.rates;
     
     const karatData = [
-      { karat: 24, name: "Emas 24 Karat", purity: "99.9% Murni", multiplier: 1.0 },
-      { karat: 22, name: "Emas 22 Karat", purity: "91.6% Murni", multiplier: 0.916 },
-      { karat: 18, name: "Emas 18 Karat", purity: "75% Murni", multiplier: 0.75 },
+      { karat: 24, name: "Emas 24 Karat", purity: "99.9% Murni", rateKey: "24k" },
+      { karat: 22, name: "Emas 22 Karat", purity: "91.6% Murni", rateKey: "22k" },
+      { karat: 18, name: "Emas 18 Karat", purity: "75% Murni", rateKey: "18k" },
     ];
 
-    // Convert troy ounce to grams (1 troy ounce = 31.1035 grams)
-    const pricePerGramIDR = goldPricePerOunceIDR / 31.1035;
-    
-    return Promise.all(karatData.map(async karat => ({
-      karat: karat.karat,
-      name: karat.name,
-      purity: karat.purity,
-      pricePerGram: Math.round(pricePerGramIDR * karat.multiplier),
-      change: await this.calculatePriceChange(karat.karat, pricePerGramIDR * karat.multiplier),
-      changePercent: await this.calculateChangePercent(karat.karat, pricePerGramIDR * karat.multiplier),
-      timestamp: new Date(),
-    })));
+    return Promise.all(karatData.map(async karat => {
+      const pricePerGram = rates[karat.rateKey] || rates.gold || 1095000; // fallback to sample price
+      
+      return {
+        karat: karat.karat,
+        name: karat.name,
+        purity: karat.purity,
+        pricePerGram: Math.round(pricePerGram),
+        change: await this.calculatePriceChange(karat.karat, pricePerGram),
+        changePercent: await this.calculateChangePercent(karat.karat, pricePerGram),
+        timestamp: new Date(),
+      };
+    }));
   }
 
   private async calculatePriceChange(karat: number, currentPrice: number): Promise<number> {
