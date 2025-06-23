@@ -29,34 +29,52 @@ export class GoldScraper {
       const $ = cheerio.load(html);
       const prices: ScrapedGoldPrice[] = [];
       
-      // Cari tabel harga emas (struktur bisa bervariasi)
-      $('table tr').each((i, row) => {
-        const cells = $(row).find('td');
-        if (cells.length >= 3) {
-          const karatText = $(cells[0]).text().trim();
-          const buyPriceText = $(cells[1]).text().trim();
-          const sellPriceText = $(cells[2]).text().trim();
+      // Debug: Log HTML structure
+      console.log('HTML preview:', html.substring(0, 500));
+      
+      // Cari berbagai pola harga emas di halaman
+      const pricePatterns = [
+        { selector: 'table tr', cells: 3 },
+        { selector: '.price-row', cells: 2 },
+        { selector: '.gold-price', cells: 1 },
+        { selector: '[class*="emas"]', cells: 1 },
+        { selector: '[class*="gold"]', cells: 1 }
+      ];
+      
+      for (const pattern of pricePatterns) {
+        $(pattern.selector).each((i, row) => {
+          const $row = $(row);
+          const text = $row.text().toLowerCase();
           
-          // Extract karat number
-          const karatMatch = karatText.match(/(\d+)/);
-          if (karatMatch) {
-            const karat = parseInt(karatMatch[1]);
-            const buyPrice = this.parsePrice(buyPriceText);
-            const sellPrice = this.parsePrice(sellPriceText);
+          // Cek apakah mengandung kata kunci emas
+          if (text.includes('emas') || text.includes('gold') || text.includes('karat')) {
+            const cells = $row.find('td');
+            const fullText = $row.text();
             
-            if (buyPrice > 0 && sellPrice > 0) {
-              prices.push({
-                source: 'harga-emas.org',
-                karat,
-                buyPrice,
-                sellPrice,
-                unit: 'gram',
-                timestamp: new Date()
-              });
+            // Cari angka karat dan harga dalam teks
+            const karatMatch = fullText.match(/(\d+)\s*k/i);
+            const priceMatch = fullText.match(/rp?\s?(\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?)/i);
+            
+            if (karatMatch && priceMatch) {
+              const karat = parseInt(karatMatch[1]);
+              const priceText = priceMatch[1];
+              const price = this.parsePrice(priceText);
+              
+              if (price > 500000 && [10, 14, 16, 18, 20, 22, 24].includes(karat)) {
+                prices.push({
+                  source: 'harga-emas.org',
+                  karat,
+                  buyPrice: price,
+                  sellPrice: price * 0.97, // Estimasi harga jual 3% lebih rendah
+                  unit: 'gram',
+                  timestamp: new Date()
+                });
+                console.log(`Found ${karat}K at ${price}`);
+              }
             }
           }
-        }
-      });
+        });
+      }
       
       return prices;
     } catch (error) {
@@ -188,22 +206,27 @@ export class GoldScraper {
   
   // Helper method to parse price from text
   private parsePrice(priceText: string): number {
-    // Remove non-numeric characters except dots and commas
-    const cleaned = priceText.replace(/[^\d.,]/g, '');
+    if (!priceText) return 0;
     
-    // Handle Indonesian number format (dots as thousands separator, comma as decimal)
-    const indonesianFormat = cleaned.replace(/\./g, '').replace(',', '.');
+    // Remove currency symbols and whitespace
+    let cleaned = priceText.replace(/[rp\s]/gi, '');
     
-    // Handle international format (commas as thousands separator, dot as decimal)
-    const internationalFormat = cleaned.replace(/,/g, '');
+    // Handle different number formats
+    // Indonesian: 1.095.000 or 1,095,000
+    // Remove all dots and commas used as thousands separators
+    cleaned = cleaned.replace(/[.,]/g, '');
     
-    // Try both formats and return the one that makes sense
-    const indonesianPrice = parseFloat(indonesianFormat);
-    const internationalPrice = parseFloat(internationalFormat);
+    const price = parseInt(cleaned);
     
-    // Return the price that's in a reasonable range for gold (> 500000 IDR per gram)
-    if (indonesianPrice > 500000) return indonesianPrice;
-    if (internationalPrice > 500000) return internationalPrice;
+    // Validate price range for gold in IDR (400k - 2M per gram)
+    if (price >= 400000 && price <= 2000000) {
+      return price;
+    }
+    
+    // If price seems too small, might be missing zeros
+    if (price >= 400 && price <= 2000) {
+      return price * 1000; // Convert to proper IDR format
+    }
     
     return 0;
   }

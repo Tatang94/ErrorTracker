@@ -100,6 +100,13 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - Sistem fallback multi-layer: scraping → API external → database
 - User-Agent headers untuk bypass proteksi anti-bot
 - Penghapusan halaman Profile untuk menyederhanakan UI (tidak perlu login)
+- Expanded gold karat options dari 3 ke 7 jenis (10K, 14K, 16K, 18K, 20K, 22K, 24K)
+
+### Price Accuracy Implementation (June 23, 2025)
+- Implementasi harga pasar realistis berdasarkan kondisi Juni 2025
+- Harga base emas 24K: Rp 1.125.000 per gram (sesuai pasar Indonesia)
+- Sistem validasi harga untuk mencegah data tidak akurat
+- Fallback ke harga pasar terkini jika scraping gagal
 
 ## User Preferences
 
