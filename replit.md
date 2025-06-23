@@ -90,10 +90,10 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 ## Recent Changes
 
 ### Jewelry Calculator & WhatsApp Integration (December 27, 2024)
-- Kalkulator menggunakan harga perhiasan dengan ongkos kerja (10-20%)
+- Kalkulator menggunakan harga perhiasan dengan komisi 5% flat untuk semua karat
 - Tombol WhatsApp otomatis redirect ke wa.me/89663596711
 - Pesan otomatis berisi detail perhiasan dan estimasi harga
-- Sistem ongkos kerja bervariasi per karat (18K=18%, 24K=10%, dll)
+- Komisi 5% konsisten untuk semua jenis emas (10K-24K)
 
 ### GoldAPI.io Integration (December 27, 2024)
 - Integrasi dengan GoldAPI.io sebagai sumber utama harga emas internasional

@@ -36,20 +36,9 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
     }
   };
 
-  // Hitung harga perhiasan dengan ongkos kerja
+  // Hitung harga perhiasan dengan ongkos kerja 5%
   const calculateJewelryPrice = (basePrice: number, karat: number) => {
-    const workmanshipRates: { [key: number]: number } = {
-      24: 0.10, // 10% untuk 24K (paling sederhana)
-      22: 0.12, // 12% untuk 22K 
-      21: 0.14, // 14% untuk 21K
-      20: 0.15, // 15% untuk 20K
-      18: 0.18, // 18% untuk 18K (paling umum)
-      16: 0.19, // 19% untuk 16K
-      14: 0.20, // 20% untuk 14K
-      10: 0.20  // 20% untuk 10K
-    };
-    
-    const workmanshipRate = workmanshipRates[karat] || 0.15;
+    const workmanshipRate = 0.05; // 5% komisi untuk semua jenis emas
     return Math.round(basePrice * (1 + workmanshipRate));
   };
 
@@ -145,7 +134,7 @@ export function UnitConverter({ goldPrices }: UnitConverterProps) {
         </div>
         
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 rounded-lg">
-          <div className="text-sm opacity-90 mb-1">Harga Perhiasan (Termasuk Ongkos Kerja)</div>
+          <div className="text-sm opacity-90 mb-1">Harga Perhiasan (Termasuk Komisi 5%)</div>
           <div className="text-2xl font-bold">{formatCurrency(result)}</div>
           <div className="text-xs opacity-75 mt-1">
             {amount > 0 ? `${amount} ${getUnitLabel()} perhiasan emas ${goldType}K` : "Masukkan jumlah untuk menghitung"}
