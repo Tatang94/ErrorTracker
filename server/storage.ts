@@ -1,4 +1,6 @@
 import { goldPrices, priceHistory, type GoldPrice, type InsertGoldPrice, type PriceHistory, type InsertPriceHistory } from "@shared/schema";
+import { db } from "./db";
+import { eq, gte } from "drizzle-orm";
 
 export interface IStorage {
   // Gold prices
@@ -13,96 +15,69 @@ export interface IStorage {
   getChartData(karat: number, timeframe: string): Promise<PriceHistory[]>;
 }
 
-export class MemStorage implements IStorage {
-  private goldPrices: Map<number, GoldPrice>;
-  private priceHistory: PriceHistory[];
-  private currentId: number;
-  private historyId: number;
-
-  constructor() {
-    this.goldPrices = new Map();
-    this.priceHistory = [];
-    this.currentId = 1;
-    this.historyId = 1;
-    
-    // Initialize with some base data
-    this.initializeData();
-  }
-
-  private initializeData() {
-    const baseTimestamp = new Date();
-    
-    // Initialize current prices
-    const initialPrices = [
-      { karat: 24, pricePerGram: 1095000, change: 15000, changePercent: 1.4 },
-      { karat: 22, pricePerGram: 1003000, change: 12500, changePercent: 1.3 },
-      { karat: 18, pricePerGram: 821250, change: -5750, changePercent: -0.7 },
-    ];
-
-    initialPrices.forEach(price => {
-      const goldPrice: GoldPrice = {
-        id: this.currentId++,
-        karat: price.karat,
-        pricePerGram: price.pricePerGram,
-        currency: "IDR",
-        change: price.change,
-        changePercent: price.changePercent,
-        timestamp: baseTimestamp,
-      };
-      this.goldPrices.set(price.karat, goldPrice);
-    });
-
-    // Initialize history data (last 7 days)
-    for (let i = 7; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(date.getDate() - i);
-      
-      initialPrices.forEach(price => {
-        const variance = (Math.random() - 0.5) * 0.05; // ±2.5% variance
-        const historyPrice = price.pricePerGram * (1 + variance);
-        
-        const history: PriceHistory = {
-          id: this.historyId++,
-          karat: price.karat,
-          pricePerGram: historyPrice,
-          currency: "IDR",
-          date,
-        };
-        this.priceHistory.push(history);
-      });
-    }
-  }
-
+export class DatabaseStorage implements IStorage {
   async getLatestGoldPrices(): Promise<GoldPrice[]> {
-    return Array.from(this.goldPrices.values());
+    const results = await db.select().from(goldPrices);
+    return results;
   }
 
   async updateGoldPrice(price: InsertGoldPrice): Promise<GoldPrice> {
-    const goldPrice: GoldPrice = {
-      id: this.currentId++,
-      ...price,
-      timestamp: new Date(),
-    };
-    this.goldPrices.set(price.karat, goldPrice);
-    return goldPrice;
+    // First, try to update existing record
+    const existing = await db.select().from(goldPrices).where(eq(goldPrices.karat, price.karat));
+    
+    if (existing.length > 0) {
+      const [updated] = await db
+        .update(goldPrices)
+        .set({
+          pricePerGram: price.pricePerGram,
+          currency: price.currency || "IDR",
+          change: price.change || null,
+          changePercent: price.changePercent || null,
+          timestamp: new Date(),
+        })
+        .where(eq(goldPrices.karat, price.karat))
+        .returning();
+      return updated;
+    } else {
+      // Insert new record
+      const [inserted] = await db
+        .insert(goldPrices)
+        .values({
+          karat: price.karat,
+          pricePerGram: price.pricePerGram,
+          currency: price.currency || "IDR",
+          change: price.change || null,
+          changePercent: price.changePercent || null,
+        })
+        .returning();
+      return inserted;
+    }
   }
 
   async getPriceHistory(karat: number, days: number): Promise<PriceHistory[]> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - days);
     
-    return this.priceHistory
-      .filter(p => p.karat === karat && p.date >= cutoffDate)
-      .sort((a, b) => b.date.getTime() - a.date.getTime());
+    const results = await db
+      .select()
+      .from(priceHistory)
+      .where(eq(priceHistory.karat, karat))
+      .orderBy(priceHistory.date);
+    
+    return results.filter(p => p.date >= cutoffDate);
   }
 
   async addPriceHistory(history: InsertPriceHistory): Promise<PriceHistory> {
-    const priceHistory: PriceHistory = {
-      id: this.historyId++,
-      ...history,
-    };
-    this.priceHistory.push(priceHistory);
-    return priceHistory;
+    const [inserted] = await db
+      .insert(priceHistory)
+      .values({
+        karat: history.karat,
+        pricePerGram: history.pricePerGram,
+        currency: history.currency || "IDR",
+        date: history.date,
+      })
+      .returning();
+    return inserted;
   }
 
   async getChartData(karat: number, timeframe: string): Promise<PriceHistory[]> {
@@ -126,4 +101,4 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

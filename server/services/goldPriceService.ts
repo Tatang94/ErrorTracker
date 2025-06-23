@@ -2,17 +2,19 @@ import { storage } from "../storage";
 import type { GoldPriceData, MarketStatus } from "@shared/schema";
 
 export class GoldPriceService {
-  private readonly API_KEY = process.env.GOLD_API_KEY || process.env.METALS_API_KEY || "demo_key";
-  private readonly API_URL = "https://api.metals.live/v1/spot/gold";
+  private readonly API_KEY = process.env.GOLD_API_KEY || "demo_key";
+  private readonly API_URL = "https://metals-api.com/api/latest";
 
   async fetchLatestPrices(): Promise<GoldPriceData[]> {
     try {
-      // First try to get from real API
-      const response = await fetch(`${this.API_URL}?access_key=${this.API_KEY}`);
+      // Fetch from metals-api.com with IDR base currency
+      const response = await fetch(`${this.API_URL}?access_key=${this.API_KEY}&base=IDR&symbols=XAU`);
       
       if (response.ok) {
         const data = await response.json();
-        return this.processApiData(data);
+        if (data.success && data.rates && data.rates.XAU) {
+          return await this.processMetalsApiData(data);
+        }
       }
       
       // Fallback to stored data if API fails
@@ -26,10 +28,9 @@ export class GoldPriceService {
     }
   }
 
-  private processApiData(apiData: any): GoldPriceData[] {
-    // Convert USD to IDR (approximate rate: 1 USD = 15,000 IDR)
-    const usdToIdr = 15000;
-    const goldPriceUsd = apiData.price || 2000; // Default if no price
+  private async processMetalsApiData(apiData: any): Promise<GoldPriceData[]> {
+    // XAU rate from metals-api.com represents 1 troy ounce of gold in IDR
+    const goldPricePerOunceIDR = apiData.rates.XAU;
     
     const karatData = [
       { karat: 24, name: "Emas 24 Karat", purity: "99.9% Murni", multiplier: 1.0 },
@@ -38,17 +39,41 @@ export class GoldPriceService {
     ];
 
     // Convert troy ounce to grams (1 troy ounce = 31.1035 grams)
-    const pricePerGramUsd = goldPriceUsd / 31.1035;
+    const pricePerGramIDR = goldPricePerOunceIDR / 31.1035;
     
-    return karatData.map(karat => ({
+    return Promise.all(karatData.map(async karat => ({
       karat: karat.karat,
       name: karat.name,
       purity: karat.purity,
-      pricePerGram: Math.round(pricePerGramUsd * karat.multiplier * usdToIdr),
-      change: Math.round((Math.random() - 0.5) * 50000), // Simulated change
-      changePercent: parseFloat(((Math.random() - 0.5) * 4).toFixed(2)),
+      pricePerGram: Math.round(pricePerGramIDR * karat.multiplier),
+      change: await this.calculatePriceChange(karat.karat, pricePerGramIDR * karat.multiplier),
+      changePercent: await this.calculateChangePercent(karat.karat, pricePerGramIDR * karat.multiplier),
       timestamp: new Date(),
-    }));
+    })));
+  }
+
+  private async calculatePriceChange(karat: number, currentPrice: number): Promise<number> {
+    try {
+      const storedPrices = await storage.getLatestGoldPrices();
+      const previousPrice = storedPrices.find(p => p.karat === karat);
+      return previousPrice ? Math.round(currentPrice - previousPrice.pricePerGram) : 0;
+    } catch {
+      return 0;
+    }
+  }
+
+  private async calculateChangePercent(karat: number, currentPrice: number): Promise<number> {
+    try {
+      const storedPrices = await storage.getLatestGoldPrices();
+      const previousPrice = storedPrices.find(p => p.karat === karat);
+      if (previousPrice && previousPrice.pricePerGram > 0) {
+        const change = currentPrice - previousPrice.pricePerGram;
+        return parseFloat(((change / previousPrice.pricePerGram) * 100).toFixed(2));
+      }
+      return 0;
+    } catch {
+      return 0;
+    }
   }
 
   private convertStoredPrices(storedPrices: any[]): GoldPriceData[] {
