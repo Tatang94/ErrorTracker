@@ -59,7 +59,7 @@ export default function Home() {
           ) : goldPrices ? (
             <div className="space-y-3">
               {goldPrices.map((price) => (
-                <GoldPriceCard key={price.karat} goldPrice={price} />
+                <GoldPriceCard key={`gold-price-${price.karat}`} goldPrice={price} />
               ))}
             </div>
           ) : (

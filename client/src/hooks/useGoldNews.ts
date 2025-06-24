@@ -13,13 +13,13 @@ export interface NewsArticle {
 
 export function useGoldNews() {
   return useQuery({
-    queryKey: ["goldNews"],
+    queryKey: ["/api/gold-news"],
     queryFn: async (): Promise<NewsArticle[]> => {
-      return await apiRequest({
-        endpoint: "/api/gold-news",
-        method: "GET",
-        on401: "returnNull"
-      });
+      const response = await fetch("/api/gold-news");
+      if (!response.ok) {
+        throw new Error("Failed to fetch gold news");
+      }
+      return response.json();
     },
     staleTime: 30 * 60 * 1000, // 30 minutes
     refetchInterval: 30 * 60 * 1000, // Refresh every 30 minutes

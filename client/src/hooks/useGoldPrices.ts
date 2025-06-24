@@ -7,23 +7,27 @@ export const useGoldPrices = () => {
   
   return useQuery({
     queryKey: ["/api/gold-prices"],
-    queryFn: goldPriceApi.getLatestPrices,
+    queryFn: async () => {
+      try {
+        return await goldPriceApi.getLatestPrices();
+      } catch (error) {
+        toast({
+          title: "Koneksi Bermasalah", 
+          description: "Tidak dapat memuat data harga emas terbaru",
+          variant: "destructive",
+        });
+        throw error;
+      }
+    },
     refetchInterval: 5 * 60 * 1000, // Refetch every 5 minutes
     staleTime: 30 * 1000, // Consider data stale after 30 seconds
-    onError: () => {
-      toast({
-        title: "Koneksi Bermasalah",
-        description: "Tidak dapat memuat data harga emas terbaru",
-        variant: "destructive",
-      });
-    },
   });
 };
 
 export const useMarketStatus = () => {
   return useQuery({
     queryKey: ["/api/market-status"],
-    queryFn: goldPriceApi.getMarketStatus,
+    queryFn: async () => await goldPriceApi.getMarketStatus(),
     refetchInterval: 60 * 1000, // Refetch every minute
   });
 };
@@ -31,7 +35,7 @@ export const useMarketStatus = () => {
 export const usePriceHistory = (karat: number, days: number = 7) => {
   return useQuery({
     queryKey: ["/api/price-history", karat, days],
-    queryFn: () => goldPriceApi.getPriceHistory(karat, days),
+    queryFn: async () => await goldPriceApi.getPriceHistory(karat, days),
     enabled: !!karat,
   });
 };
@@ -39,7 +43,7 @@ export const usePriceHistory = (karat: number, days: number = 7) => {
 export const useChartData = (karat: number, timeframe: string = "1D") => {
   return useQuery({
     queryKey: ["/api/chart-data", karat, timeframe],
-    queryFn: () => goldPriceApi.getChartData(karat, timeframe),
+    queryFn: async () => await goldPriceApi.getChartData(karat, timeframe),
     enabled: !!karat,
   });
 };
@@ -49,7 +53,7 @@ export const useRefreshPrices = () => {
   const { toast } = useToast();
   
   return useMutation({
-    mutationFn: goldPriceApi.refreshPrices,
+    mutationFn: async () => await goldPriceApi.refreshPrices(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/gold-prices"] });
       queryClient.invalidateQueries({ queryKey: ["/api/price-history"] });
