@@ -38,7 +38,8 @@ class InMemoryStorage {
   select() {
     return {
       from: (table: any) => ({
-        where: (condition: any) => this.goldPricesData,
+        where: (condition: any) => Promise.resolve(this.goldPricesData),
+        orderBy: (field: any) => Promise.resolve(this.priceHistoryData),
         data: this.goldPricesData
       }),
       data: this.goldPricesData
