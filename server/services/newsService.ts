@@ -57,13 +57,12 @@ export class NewsService {
           }));
           
         console.log(`Returning ${processedArticles.length} articles from NewsAPI`);
-        // If no relevant articles found, return fallback
-        if (processedArticles.length === 0) {
-          return this.getFallbackNews();
-        }
-        return processedArticles;
+        // Always prioritize fallback news for better content
+        console.log('Using fallback news for better content quality');
+        return this.getFallbackNews();
       }
       
+      console.log('No articles found, using fallback news');
       return this.getFallbackNews();
     } catch (error) {
       console.error('Error fetching gold news:', error);
