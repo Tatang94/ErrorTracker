@@ -239,15 +239,8 @@ export class GoldPriceService {
   }
 
   async getMarketStatus(): Promise<MarketStatus> {
-    const now = new Date();
-    const jakartaTime = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Jakarta" }));
-    const hour = jakartaTime.getHours();
-    
-    // Market is open from 9 AM to 5 PM Jakarta time
-    const isOpen = hour >= 9 && hour < 17;
-    
     return {
-      isOpen,
+      isOpen: true, // Pasar emas selalu buka untuk perdagangan
       location: "Jakarta",
       overallChange: 2.1,
       overallChangePercent: 2.1,
