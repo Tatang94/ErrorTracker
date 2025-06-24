@@ -133,6 +133,13 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - Database setup complete with proper error handling and fallback mechanisms
 - NewsAPI integration configured with real API key for authentic gold news
 - Fixed duplicate React key warnings across all components
+- GoldAPI quota exceeded, system now relies on Indonesian scraping sources (Pegadaian, harga-emas.org)
+
+### Current Data Sources (June 2025)
+- Primary: Web scraping from Pegadaian and harga-emas.org (working)
+- Secondary: Database fallback system (reliable)
+- NewsAPI: Configured with valid API key for gold news
+- Market reference price: Rp 1.710.000 per gram (24K gold from Pegadaian)
 
 ### Web Scraping Implementation (June 23, 2025)
 - Implementasi web scraping untuk sumber Indonesia (harga-emas.org, logammulia.com, pegadaian.co.id)
