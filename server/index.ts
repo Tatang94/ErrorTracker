@@ -2,6 +2,9 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 
+// Configure environment variables
+process.env.NEWS_API_KEY = "9f98cd32f29442efbbf17e8720bfd3f9";
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -131,6 +131,8 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 - Configured PostgreSQL database with fallback system for reliability
 - All core features working: gold prices, charts, calculator, market status
 - Database setup complete with proper error handling and fallback mechanisms
+- NewsAPI integration configured with real API key for authentic gold news
+- Fixed duplicate React key warnings across all components
 
 ### Web Scraping Implementation (June 23, 2025)
 - Implementasi web scraping untuk sumber Indonesia (harga-emas.org, logammulia.com, pegadaian.co.id)

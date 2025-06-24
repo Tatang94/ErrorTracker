@@ -48,7 +48,7 @@ export default function History() {
             <div className="flex bg-white rounded-xl p-2 shadow-sm border border-gray-100">
               {karatOptions.map((option) => (
                 <Button
-                  key={option.karat}
+                  key={`history-karat-${option.karat}`}
                   variant={selectedKarat === option.karat ? "default" : "ghost"}
                   className={`flex-1 ${selectedKarat === option.karat ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
                   onClick={() => setSelectedKarat(option.karat)}
@@ -65,7 +65,7 @@ export default function History() {
             <div className="flex bg-white rounded-xl p-2 shadow-sm border border-gray-100">
               {periodOptions.map((option) => (
                 <Button
-                  key={option.days}
+                  key={`period-${option.days}`}
                   variant={selectedPeriod === option.days ? "default" : "ghost"}
                   className={`flex-1 ${selectedPeriod === option.days ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
                   onClick={() => setSelectedPeriod(option.days)}
