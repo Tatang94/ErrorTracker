@@ -14,21 +14,13 @@ export class NewsService {
 
   async getGoldNewsIndonesia(): Promise<NewsArticle[]> {
     try {
-      const searchQueries = [
-        "harga emas hari ini Indonesia",
-        "harga emas terbaru Indonesia", 
-        "investasi emas Indonesia",
-        "emas antam pegadaian"
-      ];
-
-      const query = searchQueries.join(" OR ");
+      console.log('NewsAPI Key:', this.NEWS_API_KEY ? 'Available' : 'Missing');
       
       const params = new URLSearchParams({
-        q: query,
+        q: 'harga emas OR emas antam OR investasi emas OR logam mulia',
         language: 'id',
         sortBy: 'publishedAt',
-        pageSize: '10',
-        from: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Last 24 hours
+        pageSize: '8',
         apiKey: this.NEWS_API_KEY
       });
 
@@ -46,15 +38,13 @@ export class NewsService {
 
       const data = await response.json();
       
-      if (data.status === 'ok' && data.articles) {
+      console.log('NewsAPI Response status:', data.status);
+      console.log('Articles found:', data.articles ? data.articles.length : 0);
+      
+      if (data.status === 'ok' && data.articles && data.articles.length > 0) {
         console.log(`Found ${data.articles.length} gold news articles`);
-        return data.articles
-          .filter((article: any) => 
-            article.title && 
-            article.description && 
-            (article.title.toLowerCase().includes('emas') || 
-             article.description.toLowerCase().includes('emas'))
-          )
+        // Return articles even if they don't contain "emas" directly, as long as they're from our search
+        const processedArticles = data.articles
           .slice(0, 5)
           .map((article: any) => ({
             title: article.title,
@@ -65,6 +55,9 @@ export class NewsService {
               name: article.source.name
             }
           }));
+          
+        console.log(`Returning ${processedArticles.length} articles`);
+        return processedArticles;
       }
       
       return this.getFallbackNews();
