@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { GoldPriceCard } from "@/components/GoldPriceCard";
 import { PriceChart } from "@/components/PriceChart";
 import { UnitConverter } from "@/components/UnitConverter";
+import { GoldNewsSection } from "@/components/GoldNewsSection";
 import { LoadingSkeleton } from "@/components/LoadingSpinner";
 import { ErrorToast } from "@/components/ErrorToast";
 import { formatDateRelative, formatCurrency, formatPercentage } from "@/lib/formatters";
@@ -68,6 +69,9 @@ export default function Home() {
             </div>
           )}
         </section>
+
+        {/* Gold News Section */}
+        <GoldNewsSection />
 
         {/* Price Chart Section */}
         {goldPrices && goldPrices.length > 0 && (

@@ -89,6 +89,13 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 
 ## Recent Changes
 
+### News Integration & UI Updates (December 27, 2024)
+- Implementasi berita emas Indonesia menggunakan NewsAPI
+- Section berita khusus harga emas hari ini dari sumber Indonesia
+- Update otomatis setiap 30 menit untuk berita terbaru
+- Fallback news system dengan konten relevan tentang emas
+- Header dengan tema emas (gradient yellow) dan icon koin emas
+
 ### ZONA GOLD Branding & Market Status (December 27, 2024)
 - Rebranding aplikasi dari EmasKu menjadi ZONA GOLD
 - Status pasar emas selalu menampilkan "Buka" untuk operasional 24/7

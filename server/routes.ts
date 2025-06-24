@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { goldPriceService } from "./services/goldPriceService";
+import { newsService } from "./services/newsService";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
@@ -76,6 +77,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error refreshing prices:", error);
       res.status(500).json({ error: "Failed to refresh prices" });
+    }
+  });
+
+  // Get gold news from Indonesia
+  app.get("/api/gold-news", async (req, res) => {
+    try {
+      const news = await newsService.getGoldNewsIndonesia();
+      res.json(news);
+    } catch (error) {
+      console.error("Error fetching gold news:", error);
+      res.status(500).json({ error: "Failed to fetch gold news" });
     }
   });
 
