@@ -15,7 +15,7 @@ export function Header({ lastUpdate }: HeaderProps) {
   };
 
   return (
-    <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sticky top-0 z-50">
+    <header className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white p-4 sticky top-0 z-50">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
@@ -29,14 +29,14 @@ export function Header({ lastUpdate }: HeaderProps) {
             size="sm"
             onClick={handleRefresh}
             disabled={refreshPrices.isPending}
-            className="p-2 rounded-full hover:bg-blue-600 transition-colors text-white"
+            className="p-2 rounded-full hover:bg-yellow-500 transition-colors text-white"
           >
             <RefreshCw className={`h-4 w-4 ${refreshPrices.isPending ? 'animate-spin' : ''}`} />
           </Button>
           <Button
             variant="ghost"
             size="sm"
-            className="p-2 rounded-full hover:bg-blue-600 transition-colors text-white"
+            className="p-2 rounded-full hover:bg-yellow-500 transition-colors text-white"
             title="Notifikasi"
           >
             <Bell className="h-4 w-4" />
