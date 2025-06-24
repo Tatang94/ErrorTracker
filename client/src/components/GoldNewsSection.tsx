@@ -61,7 +61,7 @@ export function GoldNewsSection() {
       
       <div className="space-y-3">
         {news.map((article, index) => (
-          <NewsCard key={index} article={article} />
+          <NewsCard key={`news-${index}-${article.title.slice(0, 20)}`} article={article} />
         ))}
       </div>
     </section>

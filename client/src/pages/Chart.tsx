@@ -34,7 +34,7 @@ export default function Chart() {
           <div className="flex bg-white rounded-xl p-2 shadow-sm border border-gray-100">
             {karatOptions.map((option) => (
               <Button
-                key={option.karat}
+                key={`chart-karat-${option.karat}`}
                 variant={selectedKarat === option.karat ? "default" : "ghost"}
                 className={`flex-1 ${selectedKarat === option.karat ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
                 onClick={() => setSelectedKarat(option.karat)}
