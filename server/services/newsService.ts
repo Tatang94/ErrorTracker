@@ -9,7 +9,7 @@ export interface NewsArticle {
 }
 
 export class NewsService {
-  private readonly NEWS_API_KEY = process.env.NEWS_API_KEY || "demo_key";
+  private readonly NEWS_API_KEY = process.env.NEWS_API_KEY || "9f98cd32f29442efbbf17e8720bfd3f9";
   private readonly BASE_URL = "https://newsapi.org/v2/everything";
 
   async getGoldNewsIndonesia(): Promise<NewsArticle[]> {
