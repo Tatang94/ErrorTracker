@@ -1,4 +1,4 @@
-import { Bell, RefreshCw } from "lucide-react";
+import { Bell, RefreshCw, Coins } from "lucide-react";
 import { formatTime } from "@/lib/formatters";
 import { useRefreshPrices } from "@/hooks/useGoldPrices";
 import { Button } from "@/components/ui/button";
@@ -18,8 +18,8 @@ export function Header({ lastUpdate }: HeaderProps) {
     <header className="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 sticky top-0 z-50">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
-            <span className="text-blue-600 font-bold text-sm">₹</span>
+          <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-full flex items-center justify-center shadow-lg">
+            <Coins className="text-yellow-900 h-5 w-5" />
           </div>
           <h1 className="text-lg font-bold">ZONA GOLD</h1>
         </div>
