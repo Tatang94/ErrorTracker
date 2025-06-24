@@ -21,7 +21,7 @@ export function Header({ lastUpdate }: HeaderProps) {
           <div className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center">
             <span className="text-blue-600 font-bold text-sm">₹</span>
           </div>
-          <h1 className="text-lg font-bold">EmasKu</h1>
+          <h1 className="text-lg font-bold">ZONA GOLD</h1>
         </div>
         <div className="flex items-center space-x-2">
           <Button

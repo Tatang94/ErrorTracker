@@ -1,8 +1,8 @@
-# EmasKu - Gold Price Tracking Application
+# ZONA GOLD - Gold Price Tracking Application
 
 ## Overview
 
-EmasKu adalah aplikasi modern untuk memantau harga emas real-time dengan mata uang Rupiah Indonesia. Aplikasi ini dibangun dengan arsitektur full-stack TypeScript dan menggunakan desain mobile-first yang mirip dengan superapp.
+ZONA GOLD adalah aplikasi modern untuk memantau harga emas real-time dengan mata uang Rupiah Indonesia. Aplikasi ini dibangun dengan arsitektur full-stack TypeScript dan menggunakan desain mobile-first yang mirip dengan superapp.
 
 ## System Architecture
 
@@ -89,11 +89,12 @@ Mendukung berbagai jenis emas (18K, 22K, 24K) dengan harga per gram dalam mata u
 
 ## Recent Changes
 
-### Weekly Price Update & PPN Integration (December 27, 2024)
+### ZONA GOLD Branding & Market Status (December 27, 2024)
+- Rebranding aplikasi dari EmasKu menjadi ZONA GOLD
+- Status pasar emas selalu menampilkan "Buka" untuk operasional 24/7
 - Update harga emas otomatis setiap 1 minggu untuk efisiensi API
 - Kalkulator menggunakan harga perhiasan dengan PPN 11% untuk semua karat
 - Tombol WhatsApp otomatis redirect ke wa.me/89663596711
-- Pesan otomatis berisi detail perhiasan dan estimasi harga
 - PPN 11% konsisten untuk semua jenis emas (10K-24K)
 
 ### GoldAPI.io Integration (December 27, 2024)
